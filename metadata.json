@@ -1,0 +1,8 @@
+{
+  "name": "One and Only Voice",
+  "description": "Premium vocal coaching team providing HIGH-END training with an editorial, magazine-inspired aesthetic.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
