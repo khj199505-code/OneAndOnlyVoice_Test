@@ -98,3 +98,21 @@
   scrollbar-width: none;  /* Firefox */
 }
 
+/* Smooth Scrolling & Hardware Acceleration Optimizations */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Force GPU nesting on transitions to avoid mobile micro-stutters */
+.snap-x,
+.overflow-x-auto,
+img,
+[class*="transition-"],
+[class*="duration-"] {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+

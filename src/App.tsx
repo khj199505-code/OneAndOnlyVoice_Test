@@ -952,10 +952,8 @@ const AboutSection = () => {
                   flex: "none"
                 }}
                 transition={{
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 28,
-                  mass: 0.9
+                  duration: 0.5,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
                 className={`relative rounded-[32px] overflow-hidden border transition-all duration-300 group ${
                   isCurrentExpanded 
