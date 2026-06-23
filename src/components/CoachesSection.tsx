@@ -1108,9 +1108,9 @@ export const CoachesSection = () => {
               id={`coach-card-${coach.id}`}
             >
               {/* Premium Card Frame */}
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg shadow-md border border-neutral-100 group-hover:border-black/5 group-hover:shadow-2xl transition-all duration-700 ease-out bg-neutral-900">
+              <div className="relative aspect-[3/4] overflow-hidden rounded-lg shadow-md border border-neutral-100 group-hover:border-black/5 group-hover:shadow-2xl transition-all duration-300 ease-out bg-neutral-900">
                 {/* Arrow Icon Indicator overlay on hover */}
-                <div className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md border border-white/40 flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 group-hover:bg-[#f37022] group-hover:-rotate-45 group-hover:text-white transition-all duration-500 ease-out shadow-sm">
+                <div className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md border border-white/40 flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 group-hover:bg-[#f37022] group-hover:-rotate-45 group-hover:text-white transition-all duration-300 ease-out shadow-sm">
                   <ArrowUpRight className="w-4 h-4" />
                 </div>
 
@@ -1118,13 +1118,13 @@ export const CoachesSection = () => {
                 <img
                   src={coach.image}
                   alt={coach.nameEn}
-                  className="w-full h-full object-cover filter grayscale contrast-[1.05] brightness-[0.98] group-hover:grayscale-0 group-hover:contrast-100 group-hover:scale-[1.04] transition-all duration-1000 cubic-bezier(0.16, 1, 0.3, 1)"
+                  className="w-full h-full object-cover filter grayscale contrast-[1.05] brightness-[0.98] group-hover:grayscale-0 group-hover:contrast-100 group-hover:scale-[1.04] transition-all duration-300 ease-out"
                   referrerPolicy="no-referrer"
                 />
                 
                 {/* Luxury Interactive Light Vignette Layer */}
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/40 via-transparent to-transparent opacity-40 group-hover:opacity-0 transition-opacity duration-700 pointer-events-none" />
-                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/40 via-transparent to-transparent opacity-40 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
 
               {/* Spacing & Typography Details */}
@@ -1200,7 +1200,7 @@ export const CoachesSection = () => {
                 Staff Recruiting
               </p>
               <h3 className="text-2xl sm:text-3xl font-sans font-bold tracking-tight text-[#1a1a1a] leading-none group-hover:text-[#f37022] transition-colors duration-300 flex items-baseline justify-between">
-                <span>지원 및 제휴</span>
+                <span>지원하기</span>
                 <span className="text-[11px] font-mono font-medium tracking-[0.16em] text-[#f37022] uppercase">
                   Recruit
                 </span>

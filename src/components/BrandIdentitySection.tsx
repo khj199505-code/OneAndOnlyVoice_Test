@@ -91,6 +91,7 @@ export const BrandIdentitySection = () => {
           className="w-full h-full scale-[1.01]" 
           title="One&amp;OnlyVoice 3D Spline Dunes Scene"
           allow="autoplay; fullscreen"
+          loading="lazy"
         />
         {/* Soft overlay gradient to protect legibility of bottom layout if necessary */}
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white/30 to-transparent pointer-events-none" />

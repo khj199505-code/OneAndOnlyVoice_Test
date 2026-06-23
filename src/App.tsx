@@ -14,27 +14,36 @@ import { InteractiveReviewsSection } from "./components/InteractiveReviewsSectio
 // --- Components ---
 
 const IntroOverlay = ({ onComplete }: { onComplete: () => void, key?: string }) => {
+  const [isExiting, setIsExiting] = useState(false);
+
   return (
     <motion.div 
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.1 }}
-      transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
+      animate={{ opacity: isExiting ? 0 : 1 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      onAnimationComplete={() => {
+        if (isExiting) {
+          onComplete();
+        }
+      }}
       className="fixed inset-0 z-[9999] bg-black group"
     >
-      <iframe 
-        src='https://my.spline.design/hellodistortingintro-gEGx10LrOQ898UfjBzB8rPbG/' 
-        frameBorder='0' 
-        width='100%' 
-        height='100%'
-        className="pointer-events-auto"
-      />
+      {!isExiting && (
+        <iframe 
+          src='https://my.spline.design/hellodistortingintro-gEGx10LrOQ898UfjBzB8rPbG/' 
+          frameBorder='0' 
+          width='100%' 
+          height='100%'
+          className="pointer-events-auto"
+        />
+      )}
       <div className="absolute inset-0 bg-black/40 pointer-events-none" />
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-10">
         <motion.button 
           initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          onClick={onComplete}
+          animate={{ opacity: isExiting ? 0 : 1, y: isExiting ? 10 : 0 }}
+          transition={{ duration: 0.4, delay: isExiting ? 0 : 0.8 }}
+          onClick={() => setIsExiting(true)}
           className="border border-white/20 text-white px-5 py-1.5 rounded-full text-[8px] font-bold uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all active:scale-90"
         >
           Enter Site
@@ -409,6 +418,15 @@ const Navbar = () => {
 
 const HeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const [loadSpline, setLoadSpline] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoadSpline(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"]
@@ -422,13 +440,15 @@ const HeroSection = () => {
     <section ref={sectionRef} id="hero" className="relative min-h-screen bg-white overflow-hidden flex flex-col">
       {/* Spline Background */}
       <div className="absolute inset-0 z-0 bg-white">
-        <iframe 
-          src='https://my.spline.design/animatedbackgroundgradientforweb-chMWxNpAWWfrg5mtXYQRrTzE/' 
-          frameBorder='0' 
-          width='100%' 
-          height='100%'
-          className="w-full h-full opacity-40 mix-blend-multiply"
-        />
+        {loadSpline && (
+          <iframe 
+            src='https://my.spline.design/animatedbackgroundgradientforweb-chMWxNpAWWfrg5mtXYQRrTzE/' 
+            frameBorder='0' 
+            width='100%' 
+            height='100%'
+            className="w-full h-full opacity-40 mix-blend-multiply"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white" />
       </div>
 
@@ -859,6 +879,14 @@ const AboutSection = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const [isLg, setIsLg] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkLg = () => setIsLg(window.innerWidth >= 1024);
+    checkLg();
+    window.addEventListener("resize", checkLg);
+    return () => window.removeEventListener("resize", checkLg);
+  }, []);
 
   const fallbackImages: Record<string, string> = {
     "https://postfiles.pstatic.net/MjAyNjA1MjNfMTIg/MDAxNzc5NDkzMDM0ODA5.-6C-vAm8HezlCaMldHE9S8FdwWJ-2M0bOyFBpIRjBggg.o98wPqIyzjbIe9T2qvrxara8WOJtfEQRnIZbbRlt_Psg.PNG/about_01.png?type=w773": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop",
@@ -916,8 +944,12 @@ const AboutSection = () => {
                 onMouseLeave={() => setHoveredIndex(null)}
                 onClick={() => setActiveIndex(index)}
                 layout
-                animate={{
+                animate={isLg ? {
                   flex: isCurrentExpanded ? 4.5 : 1,
+                  height: "100%"
+                } : {
+                  height: isCurrentExpanded ? "480px" : "84px",
+                  flex: "none"
                 }}
                 transition={{
                   type: "spring",
@@ -929,14 +961,14 @@ const AboutSection = () => {
                   isCurrentExpanded 
                     ? "border-neutral-800 bg-[#0e0e10] shadow-[0_30px_60px_rgba(0,0,0,0.5),0_12px_36px_rgba(243,112,34,0.04)]" 
                     : "border-neutral-200/30 bg-neutral-50/50 hover:bg-neutral-100/50 hover:border-neutral-300 hover:shadow-md cursor-pointer"
-                } flex flex-col h-[590px] sm:h-[540px] md:h-[520px] lg:h-full`}
+                } flex flex-col`}
                 style={{ contentVisibility: "auto" }}
               >
                 {isCurrentExpanded ? (
                   /* --- EXPANDED EDITORIAL SPOTLIGHT (Huge Portrait Panel + Ultra-Clean Typography) --- */
                   <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
                     {/* Big Bold Picture Stage - Left columns */}
-                    <div className="w-full md:w-[48%] h-[240px] sm:h-[260px] md:h-full relative overflow-hidden bg-[#0e0e10] border-b md:border-b-0 md:border-r border-white/10">
+                    <div className="w-full md:w-[48%] h-[180px] sm:h-[220px] md:h-full relative overflow-hidden bg-[#0e0e10] border-b md:border-b-0 md:border-r border-white/10 shrink-0">
                       <img
                         src={imageErrors[sig.image] ? fallbackImages[sig.image] : sig.image}
                         onError={() => setImageErrors((prev) => ({ ...prev, [sig.image]: true }))}
@@ -947,20 +979,20 @@ const AboutSection = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
                       
                       {/* Premium elegant tag on picture */}
-                      <div className="absolute top-6 left-6 bg-[#0e0e10]/85 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 text-[9px] font-mono text-[#f37022] font-black tracking-widest z-10 select-none uppercase">
+                      <div className="absolute top-4 left-4 bg-[#0e0e10]/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-[8px] font-mono text-[#f37022] font-black tracking-widest z-10 select-none uppercase">
                         PORTRAIT {sig.id}
                       </div>
                     </div>
 
                     {/* Editorial Description Column - Right columns */}
-                    <div className="w-full md:w-[52%] flex-1 h-auto md:h-full p-5 sm:p-7 md:p-8 lg:p-10 flex flex-col justify-between bg-[#0e0e10] text-white relative">
+                    <div className="w-full md:w-[52%] flex-1 min-h-0 p-5 sm:p-7 md:p-8 lg:p-10 flex flex-col justify-between bg-[#0e0e10] text-white relative overflow-y-auto scrollbar-none">
                       {/* Soft ambient gradient decoration */}
                       <div className="absolute top-0 right-0 w-44 h-44 rounded-full bg-[#f37022]/5 blur-[60px] pointer-events-none" />
 
                       <div className="space-y-4 md:space-y-6 my-auto z-10">
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                           <div className="space-y-1">
-                            <h3 className="text-lg sm:text-[21px] md:text-xl lg:text-[23px] font-sans font-black tracking-tight text-white leading-tight break-keep whitespace-pre-line">
+                            <h3 className="text-base sm:text-lg md:text-xl lg:text-[23px] font-sans font-black tracking-tight text-white leading-tight break-keep whitespace-pre-line">
                               {sig.topic}
                             </h3>
                             <span className="font-mono text-[9px] sm:text-[10px] font-semibold text-neutral-400 tracking-[0.12em] block uppercase">
@@ -970,18 +1002,18 @@ const AboutSection = () => {
 
                           <div className="w-12 h-[2px] bg-gradient-to-r from-[#f37022] to-transparent rounded-full animate-pulse" />
                           
-                          <div className="text-[13.5px] sm:text-[15px] md:text-[15px] lg:text-[16px] text-neutral-100 font-sans font-extrabold leading-snug break-keep border-l-[3px] border-[#f37022] pl-3.5 my-3.5 whitespace-pre-line">
+                          <div className="text-[12px] sm:text-[14px] md:text-[15px] lg:text-[16px] text-neutral-100 font-sans font-extrabold leading-snug break-keep border-l-[3px] border-[#f37022] pl-3 my-2 md:my-3.5 whitespace-pre-line">
                             {sig.subheading}
                           </div>
                         </div>
 
-                        <p className="text-[11.5px] sm:text-xs md:text-xs lg:text-[13.5px] font-medium text-neutral-400 leading-relaxed text-left break-keep">
+                        <p className="text-[11px] sm:text-xs md:text-xs lg:text-[13.5px] font-medium text-neutral-400 leading-relaxed text-left break-keep">
                           {sig.body}
                         </p>
                       </div>
 
                       {/* Tidy human-friendly elegant footer */}
-                      <div className="border-t border-neutral-800/80 pt-4 mt-4 flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-neutral-500 font-bold tracking-wider z-10">
+                      <div className="border-t border-neutral-800/80 pt-3 mt-4 flex items-center justify-between text-[8px] sm:text-[10px] font-mono text-neutral-500 font-bold tracking-wider z-10 shrink-0">
                         <span>ONE & ONLY VOCAL SYSTEM</span>
                         <span className="text-[#f37022]">REACTIVE VIEW</span>
                       </div>
@@ -989,7 +1021,7 @@ const AboutSection = () => {
                   </div>
                 ) : (
                   /* --- SLIM COLLAPSED COLUMN LOOK (Elegant tall portrait backdrop with vertical typography) --- */
-                  <div className="relative w-full h-full flex flex-col justify-between p-6 overflow-hidden bg-neutral-950">
+                  <div className="relative w-full h-full flex flex-row lg:flex-col lg:justify-between items-center lg:items-stretch p-5 lg:p-6 overflow-hidden bg-[#0e0e10] lg:bg-neutral-950">
                     {/* Background Full Photo */}
                     <div className="absolute inset-0 z-0">
                       <img
@@ -997,20 +1029,20 @@ const AboutSection = () => {
                         onError={() => setImageErrors((prev) => ({ ...prev, [sig.image]: true }))}
                         alt={sig.topic.replace("\n", " ")}
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover filter brightness-[0.52] contrast-[1.1] saturate-[0.8] transition-all duration-700 scale-100 group-hover:scale-105"
+                        className="w-full h-full object-cover filter brightness-[0.42] contrast-[1.1] saturate-[0.8] transition-all duration-700 scale-100 group-hover:scale-105"
                       />
-                      <div className="absolute inset-x-0 inset-y-0 bg-neutral-950/35 group-hover:bg-neutral-950/15 transition-all duration-500" />
+                      <div className="absolute inset-x-0 inset-y-0 bg-neutral-950/45 group-hover:bg-neutral-950/25 transition-all duration-500" />
                     </div>
 
                     {/* Left Top Card ID */}
-                    <div className="z-10 relative">
+                    <div className="z-10 relative shrink-0">
                       <span className="font-mono text-xs font-black text-[#f37022] bg-white/10 backdrop-blur-md border border-white/10 w-9 h-9 rounded-full flex items-center justify-center">
                         {sig.id}
                       </span>
                     </div>
 
                     {/* Vertical Title rotated on desktop for extreme high-end editorial feel */}
-                    <div className="z-10 relative flex flex-col justify-end h-full">
+                    <div className="z-10 relative flex-1 lg:flex-initial min-w-0 flex items-center lg:items-stretch lg:flex-col lg:justify-end lg:h-full ml-4 lg:ml-0">
                       {/* Desktop beautiful rotation */}
                       <div className="hidden lg:block lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:-rotate-90 lg:whitespace-nowrap z-10 transition-all duration-500 text-center">
                         <span className="font-sans font-black text-xs md:text-sm tracking-widest text-white/90 block select-none group-hover:text-white group-hover:tracking-[0.14em] transition-all leading-none mb-1.5 break-keep">
@@ -1022,14 +1054,19 @@ const AboutSection = () => {
                       </div>
 
                       {/* Mobile horizontal clean label */}
-                      <div className="lg:hidden mt-auto">
-                        <h4 className="font-sans font-black text-sm text-white tracking-tight uppercase leading-none truncate mb-1">
+                      <div className="lg:hidden text-left min-w-0 pr-4">
+                        <h4 className="font-sans font-extrabold text-sm text-white tracking-tight uppercase leading-none truncate mb-1">
                           {sig.topic.replace("\n", " ")}
                         </h4>
                         <span className="font-mono text-[9px] text-[#f37022]/90 tracking-widest uppercase block font-bold truncate">
                           {sig.englishTopic}
                         </span>
                       </div>
+                    </div>
+
+                    {/* Mobile Arrow trigger */}
+                    <div className="lg:hidden z-10 shrink-0 text-[#f37022]/80">
+                      <ChevronRight size={18} className="animate-pulse" />
                     </div>
                   </div>
                 )}
